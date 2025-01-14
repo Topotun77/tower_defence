@@ -26,13 +26,20 @@ class TowerDefenseGame:
         self.background = pygame.transform.scale(self.background,
                                                  (self.settings.screen_width, self.settings.screen_height))
 
+        self.font = pygame.font.SysFont("Arial", 24)
+
+        self.background_music = pygame.mixer.Sound(self.settings.background_music)
+        self.shoot_sound = pygame.mixer.Sound(self.settings.shoot_sound)
+        self.enemy_hit_sound = pygame.mixer.Sound(self.settings.enemy_hit_sound)
+        self.put_sound = pygame.mixer.Sound(self.settings.put_sound)
+
+        self.background_music.set_volume(0.15)
+        self.background_music.play(loops=-1)
+
         self.level = Level(self)
         self.grid = Grid(self)
         self.show_grid = 2
 
-        self.font = pygame.font.SysFont("Arial", 24)
-
-        self.shoot_sound = pygame.mixer.Sound(self.settings.shoot_sound)
         self.selected_tower_type = 'basic'
         self.is_game_over = False
 

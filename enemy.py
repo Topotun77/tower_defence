@@ -2,6 +2,7 @@
 
 import pygame
 from pygame.math import Vector2
+# from main import TowerDefenseGame
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -19,8 +20,14 @@ class Enemy(pygame.sprite.Sprite):
         self.health = health
         self.position = Vector2(path[0])
         self.rect.center = self.position
+        # проиграть музыку появления врага
+        self.game.enemy_hit_sound.play()
+
 
     def take_damage(self, amount):
+        # проиграть музыку повреждения врага
+        self.game.enemy_hit_sound.play()
+
         self.health -= amount
         if self.health <= 0:
             self.kill()

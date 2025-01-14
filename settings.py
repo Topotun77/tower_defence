@@ -31,7 +31,8 @@ class Settings:
         self.shoot_sound = 'assets/sounds/shoot.wav'
         self.upgrade_sound = 'assets/sounds/upgrade.wav'
         self.sell_sound = 'assets/sounds/sell.wav'
-        self.enemy_hit_sound = 'assets/sounds/enemy_hit.wav'
+        self.put_sound = 'assets/sounds/put.mp3'
+        self.enemy_hit_sound = 'assets/sounds/archivo.mp3'
         self.background_music = 'assets/sounds/background_music.mp3'
 
         self.starting_money = 500
