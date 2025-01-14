@@ -25,6 +25,9 @@ class Tower(pygame.sprite.Sprite):
         self.level = 1
         self.original_image = self.image
 
+        # Проиграть звук
+        self.game.put_sound.play()
+
     def upgrade_cost(self):
         return 100 * self.level
 
@@ -88,6 +91,7 @@ class BasicTower(Tower):
         self.tower_range = 150
         self.damage = 20
         self.rate_of_fire = 1000
+
 
     def shoot(self, target, bullets_group):
         new_bullet = Bullet(self.position, target.position, self.damage, self.game)
