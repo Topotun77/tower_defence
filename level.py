@@ -3,7 +3,7 @@
 
 import pygame
 from enemy import Enemy
-from tower import BasicTower, SniperTower
+from settings import tower_classes
 
 
 class Level:
@@ -44,18 +44,20 @@ class Level:
 
     def attempt_place_tower(self, mouse_pos, tower_type):
         """ Пытается разместить башню выбранного типа в позиции курсора. """
-        tower_classes = {'basic': BasicTower, 'sniper': SniperTower}
         if tower_type in tower_classes and self.game.settings.starting_money >= self.game.settings.tower_cost:
             grid_pos = self.game.grid.get_grid_position(mouse_pos)
             if self.game.grid.is_spot_available(grid_pos):
                 self.game.settings.starting_money -= self.game.settings.tower_cost
                 new_tower = tower_classes[tower_type](grid_pos, self.game)
                 self.towers.add(new_tower)
-                print("Tower placed.")
+                self.game.last_event_text = 'Tower placed.'
+                print(self.game.last_event_text)
             else:
-                print("Invalid position for tower.")
+                self.game.last_event_text = 'Invalid position for tower.'
+                print(self.game.last_event_text)
         else:
-            print("Not enough money or unknown tower type.")
+            self.game.last_event_text = 'Not enough money or unknown tower type.'
+            print(self.game.last_event_text)
 
     def update(self):
         """ Обновляет состояние уровня, врагов, башен и пуль. """

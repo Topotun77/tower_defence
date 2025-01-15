@@ -1,5 +1,12 @@
 # файл настроек, содержит параметры конфигурации игры, такие как размеры экрана,
 # стоимость и параметры башен, пути к ресурсам и т.д.
+from tower import BasicTower, SniperTower, MoneyTower
+
+tower_classes = {
+    'basic': BasicTower,
+    'sniper': SniperTower,
+    'money': MoneyTower,
+}
 
 class Settings:
     def __init__(self):
@@ -33,6 +40,7 @@ class Settings:
         self.sell_sound = 'assets/sounds/sell.wav'
         self.put_sound = 'assets/sounds/put.mp3'
         self.enemy_hit_sound = 'assets/sounds/archivo.mp3'
+        self.money_sound = 'assets/sounds/money.mp3'
         self.background_music = 'assets/sounds/background_music.mp3'
 
         self.starting_money = 500

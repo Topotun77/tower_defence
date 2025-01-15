@@ -32,6 +32,7 @@ class TowerDefenseGame:
         self.shoot_sound = pygame.mixer.Sound(self.settings.shoot_sound)
         self.enemy_hit_sound = pygame.mixer.Sound(self.settings.enemy_hit_sound)
         self.put_sound = pygame.mixer.Sound(self.settings.put_sound)
+        self.money_sound = pygame.mixer.Sound(self.settings.money_sound)
 
         self.background_music.set_volume(0.15)
         self.background_music.play(loops=-1)
@@ -71,6 +72,10 @@ class TowerDefenseGame:
                 elif event.key == pygame.K_2:               # нажата клавиша "2"
                     self.selected_tower_type = 'sniper'
                     self.last_event_text = "Selected sniper tower."
+                    print(self.last_event_text)
+                elif event.key == pygame.K_3:               # нажата клавиша "3"
+                    self.selected_tower_type = 'money'
+                    self.last_event_text = "Selected money tower."
                     print(self.last_event_text)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.selected_tower_type:

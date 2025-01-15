@@ -23,7 +23,6 @@ class Enemy(pygame.sprite.Sprite):
         # проиграть музыку появления врага
         self.game.enemy_hit_sound.play()
 
-
     def take_damage(self, amount):
         # проиграть музыку повреждения врага
         self.game.enemy_hit_sound.play()
