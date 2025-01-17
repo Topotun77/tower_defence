@@ -1,12 +1,20 @@
 # файл настроек, содержит параметры конфигурации игры, такие как размеры экрана,
 # стоимость и параметры башен, пути к ресурсам и т.д.
 from tower import BasicTower, SniperTower, MoneyTower
+from random import choice
 
 tower_classes = {
     'basic': BasicTower,
     'sniper': SniperTower,
     'money': MoneyTower,
 }
+
+enemy_path_list = [
+    [(50, 400), (300, 400), (300, 200), (600, 200), (600, 600), (900, 600), (900, 300), (1150, 300)],
+    [(30, 600), (250, 400), (350, 180), (600, 200), (500, 600), (900, 600), (800, 300), (1150, 500)],
+    [(30, 300), (600, 500), (300, 300), (600, 200), (500, 600), (900, 600), (700, 300), (1150, 400)],
+    [(30, 400), (300, 200), (600, 600), (900, 200), (1150, 600)],
+]
 
 class Settings:
     def __init__(self):
@@ -22,10 +30,7 @@ class Settings:
         self.tower_upgrade_cost = 150
         self.tower_sell_percentage = 0.75
 
-        self.enemy_path = [
-            (50, 400), (300, 400), (300, 200), (600, 200),
-            (600, 600), (900, 600), (900, 300), (1150, 300)
-        ]
+        self.enemy_path = choice(enemy_path_list)
 
         self.tower_sprites = {
             'basic': 'assets/towers/basic_tower.png',
@@ -46,5 +51,6 @@ class Settings:
         self.starting_money = 500
         self.lives = 20
 
-        self.tower_positions = [(x * self.grid_size[0] + self.grid_size[0] // 2, y * self.grid_size[1] + self.grid_size[1] // 2)
-                                for x in range(1, self.cols) for y in range(3, self.rows)]
+        self.tower_positions = [
+            (x * self.grid_size[0] + self.grid_size[0] // 2, y * self.grid_size[1] + self.grid_size[1] // 2)
+            for x in range(1, self.cols) for y in range(3, self.rows)]
