@@ -77,13 +77,37 @@ class TowerDefenseGame:
                     self.selected_tower_type = 'money'
                     self.last_event_text = "Selected money tower."
                     print(self.last_event_text)
+                elif event.key == pygame.K_0:               # нажата клавиша "0"
+                    # Апгрейд башни
+                    self.selected_tower_type = 'upgrade'
+                    self.last_event_text = "Selected upgrade tower."
+                    print(self.last_event_text)
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.selected_tower_type:
-                    mouse_pos = pygame.mouse.get_pos()
-                    self.level.attempt_place_tower(mouse_pos, self.selected_tower_type)
-                else:
+                # Не выбран никакой тип башни
+                if not self.selected_tower_type:
                     self.last_event_text = "No tower type selected."
                     print(self.last_event_text)
+                    return
+                mouse_pos = pygame.mouse.get_pos()
+                for tower in self.level.towers:
+                    if tower.rect.collidepoint(mouse_pos):
+                       # Позиция занята
+                        if self.selected_tower_type != 'upgrade':
+                            self.last_event_text = "The position is occupied."
+                            print(self.last_event_text)
+                            return
+                        else:
+                            # Апгрейд башни если нашли башню
+                            tower.upgrade()
+                else:
+                    if self.selected_tower_type != 'upgrade':
+                        # Установить башню
+                        self.level.attempt_place_tower(mouse_pos, self.selected_tower_type)
+                    else:
+                        # Нет башни для апгрейда
+                        self.last_event_text = "There is no tower to upgrade."
+                        print(self.last_event_text)
+
 
     def _update_game(self):
         """ Обновляет состояние игры, вызывая обновления уровня и сетки. """
