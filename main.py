@@ -114,6 +114,7 @@ class TowerDefenseGame:
         self.level.update()
         self.grid.update()
 
+
     def _draw_win_screen(self):
         """ Отображает экран победы. """
         win_text = "You Win!"
