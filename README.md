@@ -45,7 +45,7 @@
 ### Скриншот случайного пути:
 ![img03](https://github.com/Topotun77/tower_defence/blob/master/ScreenShots/n003.JPG?raw=true)
 ### Разнообразные враги и снайперская винтовка 8 уровня:
-![img04](https://github.com/Topotun77/tower_defence/blob/master/ScreenShots/n004.JPG?raw=true)
+![img04](https://github.com/Topotun77/tower_defence/blob/master/ScreenShots/n005.JPG?raw=true)
 
 ## Для запуска:
 1. Установите все необходимые зависимости, выполнив команду:  
