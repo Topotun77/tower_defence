@@ -6,10 +6,10 @@ from pygame.math import Vector2
 
 class Bullet(pygame.sprite.Sprite):
     """ Класс пули, управляет движением пули, проверкой попаданий во врагов и нанесением урона. """
-    def __init__(self, start_pos, target_pos, damage, game):
+    def __init__(self, start_pos, target_pos, damage, game, image):
         super().__init__()
         self.game = game
-        self.image = pygame.image.load('assets/bullets/basic_bullet.png').convert_alpha()
+        self.image = pygame.image.load(image).convert_alpha()
         self.rect = self.image.get_rect(center=start_pos)
         self.position = Vector2(start_pos)
         self.target = Vector2(target_pos)

@@ -29,6 +29,9 @@ class Tower(pygame.sprite.Sprite):
         # Уровень башни
         self.level = 1
         self.original_image = self.image
+        self.modified_image = self.image
+        # Изображение пули
+        self.bullet_sprite = 'assets/bullets/basic_bullet.png'
 
         # Проиграть звук при создании башни
         self.game.put_sound.play()
@@ -47,7 +50,13 @@ class Tower(pygame.sprite.Sprite):
         """
         mouse_pos = pygame.mouse.get_pos()
         if self.is_hovered(mouse_pos):
-            level_text = self.game.font.render(f"Level: {self.level}", True, (255, 255, 255))
+            if self.level >=10:
+                title = 'ОРЕШНИК'
+                self.game.oreshnik_sound.play()
+                self.game.last_event_text = 'У вас теперь есть ОРЕШНИК!'
+            else:
+                title = ''
+            level_text = self.game.font.render(f"Level: {self.level}  {title}", True, (255, 255, 255))
             upgrade_cost_text = self.game.font.render(f"Upgrade: ${self.upgrade_cost()  }", True, (255, 255, 255))
 
             # Позиция текста
@@ -131,6 +140,11 @@ class Tower(pygame.sprite.Sprite):
         self.tower_range = round(self.tower_range * 1.2)
         self.rate_of_fire = round(self.rate_of_fire * 0.8)
 
+        # Изменить изображение башни
+        print(self.image)
+        self.image = pygame.image.load(self.modified_image).convert_alpha()
+        self.original_image = self.image
+
 
 class BasicTower(Tower):
     """ Базовая башня """
@@ -138,6 +152,7 @@ class BasicTower(Tower):
         super().__init__(position, game)
         self.image = pygame.image.load('assets/towers/basic_tower.png').convert_alpha()
         self.original_image = self.image
+        self.modified_image = 'assets/towers/basic_tower_modified.png'
         self.rect = self.image.get_rect(center=self.position)
         self.tower_range = 150
         self.damage = 20
@@ -149,7 +164,7 @@ class BasicTower(Tower):
         :param target: Цель
         :param bullets_group: Список пуль
         """
-        new_bullet = Bullet(self.position, target.position, self.damage, self.game)
+        new_bullet = Bullet(self.position, target.position, self.damage, self.game, self.bullet_sprite)
         bullets_group.add(new_bullet)
 
 
@@ -160,10 +175,12 @@ class SniperTower(Tower):
         self.image = pygame.image.load('assets/towers/sniper_tower.png').convert_alpha()
         self.image = pygame.transform.rotate(self.image, 90)
         self.original_image = self.image
+        self.modified_image = 'assets/towers/sniper_tower_modified.png'
         self.rect = self.image.get_rect(center=self.position)
         self.tower_range = 300
         self.damage = 40
         self.rate_of_fire = 2000
+        self.bullet_sprite = 'assets/bullets/sniper_bullet.png'
 
     def find_target(self, enemies):
         """
@@ -185,7 +202,7 @@ class SniperTower(Tower):
         :param target: Цель
         :param bullets_group: Список пуль
         """
-        new_bullet = Bullet(self.position, target.position, self.damage, self.game)
+        new_bullet = Bullet(self.position, target.position, self.damage, self.game, self.bullet_sprite)
         bullets_group.add(new_bullet)
 
 
@@ -196,9 +213,11 @@ class MoneyTower(Tower):
         self.image = pygame.image.load('assets/towers/money_tower.png').convert_alpha()
         self.original_image = self.image
         self.rect = self.image.get_rect(center=self.position)
+        self.bullet_sprite = 'assets/bullets/money_bullet.png'
+        self.modified_image = 'assets/towers/money_tower.png'
 
         # Генерируемая сумма за 1 выстрел
-        self.damage = 50
+        self.damage = 30
         # Интервал выстрелов (генерации денег)
         self.rate_of_fire = 10000
 
@@ -215,3 +234,7 @@ class MoneyTower(Tower):
             # Проиграть звук монет
             self.game.money_sound.play()
             self.last_shot_time = current_time
+            # Изменить картинку башни
+            self.image = pygame.image.load(self.bullet_sprite).convert_alpha()
+        elif current_time - self.last_shot_time > 250:
+            self.image = self.original_image

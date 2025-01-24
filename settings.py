@@ -3,12 +3,14 @@
 from tower import BasicTower, SniperTower, MoneyTower
 from random import choice
 
+# Башни
 tower_classes = {
     'basic': BasicTower,
     'sniper': SniperTower,
     'money': MoneyTower,
 }
 
+# Список путей
 enemy_path_list = [
     [(50, 400), (300, 400), (300, 200), (600, 200), (600, 600), (900, 600), (900, 300), (1150, 300)],
     [(30, 600), (250, 400), (350, 180), (600, 200), (500, 600), (900, 600), (800, 300), (1150, 500)],
@@ -16,11 +18,37 @@ enemy_path_list = [
     [(30, 400), (300, 200), (600, 600), (900, 200), (1150, 600)],
 ]
 
+# Список врагов
+image_enemy_paths = [
+    'assets/enemies/basic_enemy.png',
+    'assets/enemies/fast_enemy.png',
+    'assets/enemies/strong_enemy.png',
+    'assets/enemies/croco_enemy.png',
+    'assets/enemies/shark_enemy.png',
+]
+
+# Текст подсказки
+help_text = """Это игра в жанре "Tower Defense", где игроку предстоит защищать базу от волн врагов, расставляя башни.
+
+Управление игрой осуществляется с клавиатуры. Ниже перечислены доступные клавиши управления.
+
+   Цифровыми клавишами можно выбрать тип башни:
+Клавиша <1> - базовая башня
+Клавиша <2> - снайперская винтовка
+Клавиша <3> - денежная башня (генерирует деньги)
+Клавиша <0> - апгрейд башни (улучшает все характеристики башни на 20%)
+
+   Клавиша <Пробел> - показать/убрать позиции расположения башен.
+   
+   Клавиши <Enter>, <Пробел>, <N> и <G> - начать новую игру.
+"""
+
 class Settings:
     def __init__(self):
         self.screen_width = 1200
         self.screen_height = 800
-        self.bg_color = (230, 230, 230)
+        self.bg_color = (150, 150, 0)
+        self.text_color = (250, 250, 250)
 
         self.rows = 10
         self.cols = 15
@@ -37,7 +65,6 @@ class Settings:
             'sniper': 'assets/towers/sniper_tower.png',
         }
         self.enemy_sprite = 'assets/enemies/basic_enemy.png'
-        self.bullet_sprite = 'assets/bullets/basic_bullet.png'
         self.background_image = 'assets/backgrounds/game_background.png'
 
         self.shoot_sound = 'assets/sounds/shoot.wav'
@@ -45,6 +72,7 @@ class Settings:
         self.sell_sound = 'assets/sounds/sell.wav'
         self.put_sound = 'assets/sounds/put.mp3'
         self.enemy_hit_sound = 'assets/sounds/archivo.mp3'
+        self.oreshnik_sound = 'assets/sounds/oreshnik.mp3'
         self.money_sound = 'assets/sounds/money.mp3'
         self.background_music = 'assets/sounds/background_music.mp3'
 

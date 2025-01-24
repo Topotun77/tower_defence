@@ -1,11 +1,14 @@
 # Главный файл, содержащий основной игровой цикл, обработку событий,
 # обновление состояний игры и отрисовку элементов игры.
 
-import pygame
 import sys
-from settings import Settings
-from level import Level
+
+import pygame
+from tkinter import messagebox
+
 from grid import Grid
+from level import Level
+from settings import Settings, help_text
 
 
 class TowerDefenseGame:
@@ -32,6 +35,7 @@ class TowerDefenseGame:
         self.shoot_sound = pygame.mixer.Sound(self.settings.shoot_sound)
         self.enemy_hit_sound = pygame.mixer.Sound(self.settings.enemy_hit_sound)
         self.put_sound = pygame.mixer.Sound(self.settings.put_sound)
+        self.oreshnik_sound = pygame.mixer.Sound(self.settings.oreshnik_sound)
         self.money_sound = pygame.mixer.Sound(self.settings.money_sound)
 
         self.background_music.set_volume(0.15)
@@ -43,6 +47,7 @@ class TowerDefenseGame:
 
         self.selected_tower_type = 'basic'
         self.is_game_over = False
+        self.show_help = True
 
         self.last_event_text = ''
 
@@ -60,6 +65,12 @@ class TowerDefenseGame:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            elif self.show_help:
+                if (event.type == pygame.KEYDOWN and
+                        event.key in [pygame.K_KP_ENTER, pygame.K_n, pygame.K_g, pygame.K_SPACE]):        # нажата клавиша "Enter"
+                    # Начать игру
+                    print('start')
+                    self.show_help = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:             # нажата клавиша "пробел"
                     self.show_grid = (self.show_grid + 1) % 5
@@ -136,6 +147,12 @@ class TowerDefenseGame:
         """ Управляет отрисовкой всех элементов игры. """
         if self.is_game_over:
             self._draw_game_over_screen()
+        elif self.show_help:
+            self.screen.blit(self.background, (0, 0))
+            help_list = list(help_text.split('\n'))
+            for i in range(len(help_list)):
+                help_text_label = self.font.render(help_list[i], True, (255, 255, 255))
+                self.screen.blit(help_text_label, (10, 30*(i+1)))
         else:
             self.screen.blit(self.background, (0, 0))
             self.level.draw(self.screen)
@@ -166,11 +183,11 @@ class TowerDefenseGame:
         """ Запускает основной игровой цикл. """
         while True:
             self._check_events()
-            self._update_game()
+            if not self.show_help and not self.is_game_over:
+                self._update_game()
 
-            if len(self.level.enemies) == 0 and not self.level.all_waves_complete:
-                self.level.start_next_wave()
-
+                if len(self.level.enemies) == 0 and not self.level.all_waves_complete:
+                    self.level.start_next_wave()
             self._draw()
             self.clock.tick(60)
 
