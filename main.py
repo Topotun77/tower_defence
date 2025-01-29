@@ -4,7 +4,6 @@
 import sys
 
 import pygame
-from tkinter import messagebox
 
 from grid import Grid
 from level import Level
@@ -67,12 +66,22 @@ class TowerDefenseGame:
                 sys.exit()
             elif self.show_help:
                 if (event.type == pygame.KEYDOWN and
-                        event.key in [pygame.K_KP_ENTER, pygame.K_n, pygame.K_g, pygame.K_SPACE]):        # нажата клавиша "Enter"
-                    # Начать игру
+                        event.key in [pygame.K_KP_ENTER, pygame.K_n, pygame.K_g, pygame.K_SPACE, pygame.K_F2, pygame.K_p]):
+                    # Начать игру, если нажата кнопка начала игры
                     print('start')
                     self.show_help = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:             # нажата клавиша "пробел"
+                # Если игра закончена - начать новую игру по нажатию кнопки
+                if ((self.is_game_over or self.level.all_waves_complete)
+                        and event.key in [pygame.K_KP_ENTER, pygame.K_n, pygame.K_g, pygame.K_SPACE, pygame.K_F2, pygame.K_p]):
+                    self.show_help = True
+                elif event.key == pygame.K_p:               # нажата клавиша "P"
+                    # Пауза в игре
+                    self.show_help = True
+                elif event.key == pygame.K_F2:              # нажата клавиша "F2"
+                    # Начать новую игру
+                    self.is_game_over = True
+                elif event.key == pygame.K_SPACE:           # нажата клавиша "пробел"
                     self.show_grid = (self.show_grid + 1) % 5
                     self.last_event_text = "Show/Hide grid"
                     print(self.last_event_text)
@@ -93,7 +102,7 @@ class TowerDefenseGame:
                     self.selected_tower_type = 'upgrade'
                     self.last_event_text = "Selected upgrade tower."
                     print(self.last_event_text)
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not self.is_game_over:
                 # Не выбран никакой тип башни
                 if not self.selected_tower_type:
                     self.last_event_text = "No tower type selected."
@@ -159,7 +168,7 @@ class TowerDefenseGame:
             if self.show_grid in [2, 4]:
                 self.grid.draw()
 
-            money_text = self.font.render(f"Money: ${self.settings.starting_money}", True, (255, 255, 255))
+            money_text = self.font.render(f"Money: ${int(self.settings.starting_money)}", True, (255, 255, 255))
             tower_text = self.font.render(
                 f"Selected Tower: {self.selected_tower_type if self.selected_tower_type else 'None'}", True,
                 (255, 255, 255))
@@ -190,8 +199,12 @@ class TowerDefenseGame:
                     self.level.start_next_wave()
             self._draw()
             self.clock.tick(60)
+            if self.is_game_over and self.show_help:
+                return
+
 
 
 if __name__ == '__main__':
-    td_game = TowerDefenseGame()
-    td_game.run_game()
+    while True:
+        td_game = TowerDefenseGame()
+        td_game.run_game()

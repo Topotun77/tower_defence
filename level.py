@@ -2,6 +2,7 @@
 # а также расстановку башен и обработку коллизий.
 
 import pygame
+from random import random, randint
 from enemy import Enemy
 from settings import tower_classes, image_enemy_paths
 
@@ -9,19 +10,22 @@ from settings import tower_classes, image_enemy_paths
 class Level:
     """ Управляет уровнем игры, волнами врагов и расстановкой башен. """
 
-    def __init__(self, game):
+    def __init__(self, game, waves_count=30):
         """ Инициализирует уровень игры. """
         self.game = game
         self.enemies = pygame.sprite.Group()
         self.towers = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.waves = [
-            [{'path': self.game.settings.enemy_path, 'speed': 1, 'health': 100, 'reward': 10, 'image_path': image_enemy_paths[0]}] * 5,
-            [{'path': self.game.settings.enemy_path, 'speed': 1.5, 'health': 150, 'reward': 20, 'image_path': image_enemy_paths[1]}] * 7,
-            [{'path': self.game.settings.enemy_path, 'speed': 0.75, 'health': 200, 'reward': 30, 'image_path': image_enemy_paths[2]}] * 4,
-            [{'path': self.game.settings.enemy_path, 'speed': 0.5, 'health': 250, 'reward': 40, 'image_path': image_enemy_paths[3]}] * 7,
-            [{'path': self.game.settings.enemy_path, 'speed': 1.2, 'health': 300, 'reward': 50, 'image_path': image_enemy_paths[4]}] * 6,
+            [{'path': self.game.settings.enemy_path, 'speed': 1, 'health': 100, 'reward': 10, 'image_path': image_enemy_paths[0][0]}] * 5,
+            [{'path': self.game.settings.enemy_path, 'speed': 1.5, 'health': 150, 'reward': 20, 'image_path': image_enemy_paths[1][0]}] * 7,
+            [{'path': self.game.settings.enemy_path, 'speed': 0.75, 'health': 200, 'reward': 30, 'image_path': image_enemy_paths[2][0]}] * 4,
+            [{'path': self.game.settings.enemy_path, 'speed': 0.5, 'health': 250, 'reward': 40, 'image_path': image_enemy_paths[3][0]}] * 7,
+            [{'path': self.game.settings.enemy_path, 'speed': 1.2, 'health': 300, 'reward': 50, 'image_path': image_enemy_paths[4][0]}] * 6,
         ]
+        # Добавить еще waves_count - len(self.waves) волн
+        for i in range(len(self.waves), waves_count):
+            self.waves.append(self.random_level(i))
         self.current_wave = 0
         self.spawned_enemies = 0
         self.spawn_delay = 1000
@@ -30,9 +34,44 @@ class Level:
         self.start_next_wave()
         self.font = pygame.font.SysFont("Arial", 24)
 
+    def random_level(self, level=1) -> list:
+        """
+        Сгенерировать случайную волну с учетом уровня сложности игры
+        :param level: Уровень сложности игры
+        :return: Список врагов со случайными параметрами
+        """
+        def random_deviation(number: float, deviation=0.2) -> float:
+            """
+            Вычисляет случайное число с отклонением
+            :param number: Исходное число
+            :param deviation: Максимально допустимое отклонение в большую или меньшую сторону (в долях)
+            :return: Число со случайным отклонением
+            """
+            return number + (random()-0.5) * deviation * number * 2
+
+        wave = []
+        for i in range(int(random_deviation(level * 2.5))):
+            # Берем случайного врага
+            enemy = randint(0, len(image_enemy_paths)-1)
+
+            # Вносим изменения в характеристики врагов случайным образом
+            property_enemy_dict = image_enemy_paths[enemy][1]
+            for k, v in property_enemy_dict.items():
+                property_enemy_dict[k] = random_deviation(v) + v * level * 0.0015
+
+            # Добавляем врага к волне
+            wave.append({
+                'path': self.game.settings.enemy_path,
+                'image_path': image_enemy_paths[enemy][0],
+                **property_enemy_dict
+            })
+
+        return wave
+
     def start_next_wave(self):
         """ Запускает следующую волну врагов. """
-        if self.current_wave < len(self.waves):
+        if (self.current_wave < len(self.waves)
+                and self.spawned_enemies >= len(self.waves[self.current_wave])):
             self.spawned_enemies = 0
             self.spawn_next_enemy()
 
@@ -84,10 +123,15 @@ class Level:
             tower.update(self.enemies, current_time, self.bullets)
         self.bullets.update()
 
-        if len(self.enemies) == 0 and self.current_wave < len(self.waves) - 1:
+        if len(self.enemies) == 0:
+            print('До цикла', self.spawned_enemies, len(self.waves[self.current_wave]))
+
+        if (len(self.enemies) == 0 and self.current_wave < len(self.waves) - 1
+            and self.spawned_enemies >= len(self.waves[self.current_wave])):
             self.current_wave += 1
             self.start_next_wave()
-        elif len(self.enemies) == 0 and self.current_wave == len(self.waves) - 1:
+        elif (len(self.enemies) == 0 and self.current_wave == len(self.waves) - 1
+              and self.spawned_enemies >= len(self.waves[self.current_wave])):
             self.all_waves_complete = True
 
     def draw_path(self, screen):

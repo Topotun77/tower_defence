@@ -32,7 +32,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.health <= 0:
             # Получить награду за уничтожение врага
             self.game.settings.starting_money += self.reward
-            self.game.last_event_text = f'The enemy has been destroyed + ${self.reward}'
+            self.game.last_event_text = f'The enemy has been destroyed + ${int(self.reward)}'
             print(self.game.last_event_text)
             self.kill()
 
