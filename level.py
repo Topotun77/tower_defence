@@ -123,9 +123,6 @@ class Level:
             tower.update(self.enemies, current_time, self.bullets)
         self.bullets.update()
 
-        if len(self.enemies) == 0:
-            print('До цикла', self.spawned_enemies, len(self.waves[self.current_wave]))
-
         if (len(self.enemies) == 0 and self.current_wave < len(self.waves) - 1
             and self.spawned_enemies >= len(self.waves[self.current_wave])):
             self.current_wave += 1
